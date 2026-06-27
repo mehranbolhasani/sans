@@ -1,3 +1,4 @@
+import { cookies } from "next/headers";
 import { NextResponse, type NextRequest } from "next/server";
 
 import { createClient } from "@/utils/supabase/server";
@@ -14,6 +15,17 @@ export async function GET(request: NextRequest) {
     if (error) {
       return NextResponse.redirect(`${origin}/auth?error=true`);
     }
+
+    const cookieStore = await cookies();
+    const cookieHeader = cookieStore
+      .getAll()
+      .map((c) => `${c.name}=${c.value}`)
+      .join("; ");
+
+    void fetch(`${origin}/api/sync`, {
+      method: "POST",
+      headers: { cookie: cookieHeader },
+    }).catch(() => {});
   }
 
   return NextResponse.redirect(`${origin}/inbox`);
