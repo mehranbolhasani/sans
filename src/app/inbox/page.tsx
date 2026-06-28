@@ -5,11 +5,7 @@ import { EmailReader } from "@/components/inbox/EmailReader";
 import { SenderList } from "@/components/inbox/SenderList";
 import { createClient } from "@/utils/supabase/server";
 
-export default async function InboxPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}) {
+export default async function InboxPage({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
   const supabase = await createClient();
   const {
     data: { user },
@@ -24,19 +20,17 @@ export default async function InboxPage({
   const emailId = typeof sp.email === "string" ? sp.email : undefined;
 
   return (
-    <div className="flex h-svh overflow-hidden bg-background text-foreground">
-      <aside className="h-full w-[280px] shrink-0 overflow-hidden border-r border-border">
+    <div className="flex h-svh overflow-hidden bg-neutral-50 text-foreground w-full p-8">
+      <aside className="h-full w-[280px] shrink-0 overflow-hidden">
         <SenderList />
       </aside>
-      <section className="h-full flex-1 overflow-hidden">
+      <section className="h-full flex-1 overflow-hidden bg-background rounded-2xl p-4">
         {emailId ? (
           <EmailReader emailId={emailId} />
         ) : senderId ? (
           <EmailList senderId={senderId} />
         ) : (
-          <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
-            Select a sender to view emails.
-          </div>
+          <div className="flex h-full items-center justify-center text-sm text-muted-foreground">Select a sender to view emails.</div>
         )}
       </section>
     </div>

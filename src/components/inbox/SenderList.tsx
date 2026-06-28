@@ -30,23 +30,23 @@ export async function SenderList() {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex items-center justify-between border-b border-border px-4 py-3">
-        <span className="text-sm font-medium">Inbox</span>
-        <SignOutButton />
+      <div className="flex items-center justify-between px-4 py-3">
+        <div className="flex flex-col items-start gap-0">
+          <span className="text-2xl font-normal tracking-tighter">Sans —</span>
+          <div className="flex items-center gap-1">
+            <span className="text-sm font-normal text-primary/50">Inbox</span>
+            <span className="text-sm font-normal text-primary/20">/</span>
+            <SignOutButton />
+          </div>
+        </div>
       </div>
       <div className="flex-1 overflow-y-auto p-2">
         {senders.length === 0 ? (
-          <p className="px-3 py-2 text-sm text-muted-foreground">
-            No senders yet.
-          </p>
+          <p className="px-3 py-2 text-sm text-muted-foreground">No senders yet.</p>
         ) : (
           <div className="flex flex-col gap-0.5">
             {senders.map((sender) => (
-              <SenderItem
-                key={sender.id}
-                sender={sender}
-                unreadCount={sender.unread_count}
-              />
+              <SenderItem key={sender.id} sender={sender} unreadCount={sender.unread_count} />
             ))}
           </div>
         )}
