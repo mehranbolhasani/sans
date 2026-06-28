@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "sans",
-  description: "sans",
+  title: "Sans",
+  description: "All your newsletters, in one place.",
 };
 
 export default function RootLayout({
