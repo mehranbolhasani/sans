@@ -87,6 +87,8 @@ async function saveSyncState(
       user_id: userId,
       last_history_id: historyId,
       last_synced_at: new Date().toISOString(),
+      last_error: null,
+      last_error_at: null,
       ...(accessToken ? { access_token: accessToken } : {}),
       ...(tokenExpiresAt ? { token_expires_at: tokenExpiresAt } : {}),
     },
@@ -104,6 +106,8 @@ async function updateHistoryId(
     .update({
       last_history_id: historyId,
       last_synced_at: new Date().toISOString(),
+      last_error: null,
+      last_error_at: null,
     })
     .eq("user_id", userId);
 }

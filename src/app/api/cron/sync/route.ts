@@ -51,6 +51,13 @@ export async function GET(req: Request) {
       totalNewEmails += newEmails;
     } catch (err) {
       console.error(`[cron sync] user ${user_id} failed:`, err);
+      await supabase
+        .from("sync_state")
+        .update({
+          last_error: err instanceof Error ? err.message : "Unknown sync error",
+          last_error_at: new Date().toISOString(),
+        })
+        .eq("user_id", user_id);
     }
   }
 

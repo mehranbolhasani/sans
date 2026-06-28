@@ -1,7 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 
 import { SearchInput } from "./SearchInput";
-import { SenderItem } from "./sender-item";
+import { SenderListClient } from "./SenderListClient";
 import { SignOutButton } from "./sign-out-button";
 
 interface SenderRow {
@@ -42,17 +42,7 @@ export async function SenderList() {
         </div>
       </div>
       <SearchInput />
-      <div className="flex-1 overflow-y-auto p-2">
-        {senders.length === 0 ? (
-          <p className="px-3 py-2 text-sm text-muted-foreground">No senders yet.</p>
-        ) : (
-          <div className="flex flex-col gap-0.5">
-            {senders.map((sender) => (
-              <SenderItem key={sender.id} sender={sender} unreadCount={sender.unread_count} />
-            ))}
-          </div>
-        )}
-      </div>
+      <SenderListClient senders={senders} />
     </div>
   );
 }
