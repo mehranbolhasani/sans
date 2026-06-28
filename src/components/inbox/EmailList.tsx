@@ -1,6 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 
 import { EmailItem } from "./email-item";
+import { MarkAllReadButton } from "./mark-all-read-button";
 
 interface EmailRow {
   id: string;
@@ -22,6 +23,7 @@ export async function EmailList({ senderId }: { senderId: string }) {
     .limit(50);
 
   const emails = (data ?? []) as EmailRow[];
+  const hasUnread = emails.some((e) => e.is_read === false);
 
   if (emails.length === 0) {
     return <div className="flex h-full items-center justify-center text-sm text-muted-foreground">No emails from this sender.</div>;
@@ -29,7 +31,10 @@ export async function EmailList({ senderId }: { senderId: string }) {
 
   return (
     <div className="h-full overflow-y-auto">
-      <div className="px-4 py-3 text-sm font-medium">Emails</div>
+      <div className="flex items-center justify-between px-4 py-3 text-sm font-medium">
+        <span>Emails</span>
+        <MarkAllReadButton senderId={senderId} hasUnread={hasUnread} />
+      </div>
       {emails.map((email) => (
         <EmailItem key={email.id} email={email} senderId={senderId} />
       ))}
