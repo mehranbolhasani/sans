@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 interface EmailReaderClientProps {
@@ -17,6 +17,7 @@ export function EmailReaderClient({
   const router = useRouter();
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const markedRef = useRef(false);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     if (isRead || markedRef.current) return;
@@ -61,13 +62,23 @@ export function EmailReaderClient({
   }, [html]);
 
   return (
-    <iframe
-      ref={iframeRef}
-      srcDoc={html}
-      sandbox="allow-same-origin allow-popups"
-      title="Email content"
-      className="block w-full border-0"
-      style={{ height: 0 }}
-    />
+    <>
+      {!loaded && (
+        <div className="flex flex-col gap-3">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="h-4 animate-pulse rounded bg-muted" style={{ width: `${85 - i * 10}%` }} />
+          ))}
+        </div>
+      )}
+      <iframe
+        ref={iframeRef}
+        srcDoc={html}
+        sandbox="allow-same-origin allow-popups"
+        title="Email content"
+        className="block w-full border-0"
+        style={{ height: 0 }}
+        onLoad={() => setLoaded(true)}
+      />
+    </>
   );
 }

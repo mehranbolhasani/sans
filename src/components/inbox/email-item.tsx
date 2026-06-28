@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { cn } from "@/lib/utils";
@@ -21,6 +22,7 @@ export function EmailItem({ email, senderId }: EmailItemProps) {
   const searchParams = useSearchParams();
   const active = searchParams.get("email") === email.id;
   const unread = email.is_read === false;
+  const [archiving, setArchiving] = useState(false);
 
   return (
     <button
@@ -39,14 +41,22 @@ export function EmailItem({ email, senderId }: EmailItemProps) {
         tabIndex={0}
         onClick={async (ev) => {
           ev.stopPropagation();
-          await fetch(`/api/emails/${email.id}/archive`, { method: "PATCH" });
-          if (active) router.push(`/inbox?sender=${senderId}`);
-          router.refresh();
+          setArchiving(true);
+          try {
+            await fetch(`/api/emails/${email.id}/archive`, { method: "PATCH" });
+            if (active) router.push(`/inbox?sender=${senderId}`);
+            router.refresh();
+          } finally {
+            setArchiving(false);
+          }
         }}
-        className="shrink-0 opacity-0 transition-opacity text-xs text-muted-foreground hover:text-foreground group-hover:opacity-100"
+        className={cn(
+          "shrink-0 opacity-0 transition-opacity text-xs text-muted-foreground hover:text-foreground group-hover:opacity-100",
+          archiving && "pointer-events-none opacity-50",
+        )}
         aria-label="Archive"
       >
-        Archive
+        {archiving ? "Archiving..." : "Archive"}
       </span>
     </button>
   );
