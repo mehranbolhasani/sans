@@ -2,8 +2,6 @@ import { redirect } from "next/navigation";
 
 import { EmailList } from "@/components/inbox/EmailList";
 import { EmailReader } from "@/components/inbox/EmailReader";
-import { InboxKeyboardProvider } from "@/components/inbox/InboxKeyboardProvider";
-import { SenderList } from "@/components/inbox/SenderList";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function InboxPage({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
@@ -20,21 +18,32 @@ export default async function InboxPage({ searchParams }: { searchParams: Promis
   const senderId = typeof sp.sender === "string" ? sp.sender : undefined;
   const emailId = typeof sp.email === "string" ? sp.email : undefined;
 
+  let emailIds: string[] = [];
+  if (senderId) {
+    const { data: emailIdRows } = await supabase
+      .from("emails")
+      .select("id")
+      .eq("sender_id", senderId)
+      .eq("is_archived", false)
+      .order("received_at", { ascending: false })
+      .limit(50);
+    emailIds = (emailIdRows ?? []).map((row) => row.id);
+  }
+
   return (
-    <div className="flex h-svh overflow-hidden bg-neutral-50 text-foreground w-full p-8">
-      <InboxKeyboardProvider />
-      <aside className="h-full w-[280px] shrink-0 overflow-hidden">
-        <SenderList />
-      </aside>
-      <section className="h-full flex-1 overflow-hidden bg-background rounded-2xl p-4">
-        {emailId ? (
-          <EmailReader emailId={emailId} senderId={senderId ?? ""} />
-        ) : senderId ? (
-          <EmailList senderId={senderId} />
-        ) : (
-          <div className="flex h-full items-center justify-center text-sm text-muted-foreground">Select a sender to view emails.</div>
-        )}
-      </section>
-    </div>
+    <>
+      {emailId ? (
+        <EmailReader emailId={emailId} senderId={senderId ?? ""} />
+      ) : senderId ? (
+        <EmailList senderId={senderId} />
+      ) : (
+        <div className="flex h-full items-center justify-center text-sm text-muted-foreground">Select a sender to view emails.</div>
+      )}
+      <script
+        id="inbox-email-ids"
+        type="application/json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(emailIds) }}
+      />
+    </>
   );
 }

@@ -33,11 +33,6 @@ export async function EmailList({ senderId }: { senderId: string }) {
       {emails.map((email) => (
         <EmailItem key={email.id} email={email} senderId={senderId} />
       ))}
-      <script
-        id="inbox-email-ids"
-        type="application/json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(emails.map((e) => e.id)) }}
-      />
     </div>
   );
 }
