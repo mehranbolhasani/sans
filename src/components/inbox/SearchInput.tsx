@@ -35,7 +35,7 @@ export function SearchInput() {
       value={value}
       onChange={(e) => setValue(e.target.value)}
       placeholder="Search..."
-      className="w-full border-b border-border bg-transparent px-4 py-2 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-foreground/30"
+      className="w-[calc(100%-2rem)] border border-primary/20 bg-transparent px-3 py-2 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-primary/50 my-4 ml-3 rounded-sm focus:bg-white"
     />
   );
 }

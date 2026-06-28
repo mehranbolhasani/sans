@@ -18,7 +18,12 @@ export function useInboxKeyboard() {
     }
 
     function handler(e: KeyboardEvent) {
-      if (new URLSearchParams(window.location.search).has("q")) {
+      const params = new URLSearchParams(window.location.search);
+      const q = params.get("q");
+      const senderId = params.get("sender");
+      const emailId = params.get("email");
+
+      if (q && !emailId) {
         return;
       }
 
@@ -29,8 +34,6 @@ export function useInboxKeyboard() {
         return;
       }
 
-      const senderId = new URLSearchParams(window.location.search).get("sender");
-      const emailId = new URLSearchParams(window.location.search).get("email");
       const senderIds = getIds("inbox-sender-ids");
       const emailIds = getIds("inbox-email-ids");
 
@@ -72,8 +75,12 @@ export function useInboxKeyboard() {
         }
         case "u":
         case "Escape": {
-          if (emailId && senderId) router.push(`/inbox?sender=${senderId}`);
-          else if (senderId) router.push(`/inbox`);
+          if (emailId) {
+            if (q) router.push(`/inbox?q=${encodeURIComponent(q)}`);
+            else if (senderId) router.push(`/inbox?sender=${senderId}`);
+          } else if (senderId) {
+            router.push(`/inbox`);
+          }
           break;
         }
       }

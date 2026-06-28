@@ -30,7 +30,7 @@ export async function EmailList({ senderId }: { senderId: string }) {
   }
 
   return (
-    <div className="h-full overflow-y-auto">
+    <div className="h-full overflow-y-auto p-4">
       <div className="flex items-center justify-between px-4 py-3 text-sm font-medium">
         <span>Emails</span>
         <MarkAllReadButton senderId={senderId} hasUnread={hasUnread} />

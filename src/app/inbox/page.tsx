@@ -19,6 +19,7 @@ export default async function InboxPage({ searchParams }: { searchParams: Promis
   const senderId = typeof sp.sender === "string" ? sp.sender : undefined;
   const emailId = typeof sp.email === "string" ? sp.email : undefined;
   const q = typeof sp.q === "string" ? sp.q : undefined;
+  const page = typeof sp.page === "string" ? Math.max(1, parseInt(sp.page, 10) || 1) : 1;
 
   const searching = typeof q === "string" && q.length >= 2;
 
@@ -47,9 +48,9 @@ export default async function InboxPage({ searchParams }: { searchParams: Promis
   return (
     <>
       {emailId ? (
-        <EmailReader emailId={emailId} senderId={senderId ?? ""} />
+        <EmailReader emailId={emailId} senderId={senderId ?? ""} backQuery={q} backPage={page} />
       ) : searching && q ? (
-        <SearchResults q={q} />
+        <SearchResults q={q} page={page} />
       ) : senderId ? (
         <EmailList senderId={senderId} />
       ) : (
