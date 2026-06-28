@@ -6,7 +6,13 @@ import { createClient } from "@/utils/supabase/server";
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
-  const origin = requestUrl.origin;
+
+  const forwardedProto = request.headers.get("x-forwarded-proto");
+  const forwardedHost = request.headers.get("x-forwarded-host");
+  const origin =
+    forwardedProto && forwardedHost
+      ? `${forwardedProto}://${forwardedHost}`
+      : requestUrl.origin;
 
   if (code) {
     const supabase = await createClient();
