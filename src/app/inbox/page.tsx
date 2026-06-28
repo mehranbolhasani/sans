@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 
 import { EmailList } from "@/components/inbox/EmailList";
 import { EmailReader } from "@/components/inbox/EmailReader";
+import { InboxKeyboardProvider } from "@/components/inbox/InboxKeyboardProvider";
 import { SenderList } from "@/components/inbox/SenderList";
 import { createClient } from "@/utils/supabase/server";
 
@@ -21,12 +22,13 @@ export default async function InboxPage({ searchParams }: { searchParams: Promis
 
   return (
     <div className="flex h-svh overflow-hidden bg-neutral-50 text-foreground w-full p-8">
+      <InboxKeyboardProvider />
       <aside className="h-full w-[280px] shrink-0 overflow-hidden">
         <SenderList />
       </aside>
       <section className="h-full flex-1 overflow-hidden bg-background rounded-2xl p-4">
         {emailId ? (
-          <EmailReader emailId={emailId} />
+          <EmailReader emailId={emailId} senderId={senderId ?? ""} />
         ) : senderId ? (
           <EmailList senderId={senderId} />
         ) : (

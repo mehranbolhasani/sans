@@ -8,7 +8,7 @@ interface SenderRow {
   email_address: string;
   display_name: string | null;
   last_email_at: string;
-  emails: { is_read: boolean | null }[] | null;
+  emails: { is_read: boolean | null; is_archived: boolean | null }[] | null;
 }
 
 export async function SenderList() {
@@ -16,7 +16,7 @@ export async function SenderList() {
 
   const { data } = await supabase
     .from("senders")
-    .select("id, email_address, display_name, last_email_at, emails(is_read)")
+    .select("id, email_address, display_name, last_email_at, emails(is_read, is_archived)")
     .order("last_email_at", { ascending: false });
 
   const rows = (data ?? []) as SenderRow[];
@@ -25,7 +25,7 @@ export async function SenderList() {
     id: row.id,
     email_address: row.email_address,
     display_name: row.display_name,
-    unread_count: (row.emails ?? []).filter((e) => e.is_read === false).length,
+    unread_count: (row.emails ?? []).filter((e) => e.is_read === false && e.is_archived === false).length,
   }));
 
   return (
@@ -51,6 +51,11 @@ export async function SenderList() {
           </div>
         )}
       </div>
+      <script
+        id="inbox-sender-ids"
+        type="application/json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(senders.map((s) => s.id)) }}
+      />
     </div>
   );
 }

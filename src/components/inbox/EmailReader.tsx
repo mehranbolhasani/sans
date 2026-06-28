@@ -11,7 +11,7 @@ interface EmailData {
   senders: { email_address: string; display_name: string | null } | null;
 }
 
-export async function EmailReader({ emailId }: { emailId: string }) {
+export async function EmailReader({ emailId, senderId }: { emailId: string; senderId: string }) {
   const supabase = await createClient();
 
   const { data } = await supabase
@@ -43,6 +43,11 @@ export async function EmailReader({ emailId }: { emailId: string }) {
   return (
     <div className="h-full overflow-y-auto">
       <div className="mx-auto max-w-[680px] px-6 py-8">
+        <div className="mb-4">
+          <a href={`/inbox?sender=${senderId}`} className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+            ← Back
+          </a>
+        </div>
         <header className="mb-6 border-b border-border pb-6">
           <h1 className="text-xl font-semibold tracking-tight">
             {email.subject || "(no subject)"}

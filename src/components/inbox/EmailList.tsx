@@ -7,6 +7,7 @@ interface EmailRow {
   subject: string | null;
   received_at: string;
   is_read: boolean | null;
+  is_archived: boolean | null;
 }
 
 export async function EmailList({ senderId }: { senderId: string }) {
@@ -14,8 +15,9 @@ export async function EmailList({ senderId }: { senderId: string }) {
 
   const { data } = await supabase
     .from("emails")
-    .select("id, subject, received_at, is_read")
+    .select("id, subject, received_at, is_read, is_archived")
     .eq("sender_id", senderId)
+    .eq("is_archived", false)
     .order("received_at", { ascending: false })
     .limit(50);
 
@@ -31,6 +33,11 @@ export async function EmailList({ senderId }: { senderId: string }) {
       {emails.map((email) => (
         <EmailItem key={email.id} email={email} senderId={senderId} />
       ))}
+      <script
+        id="inbox-email-ids"
+        type="application/json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(emails.map((e) => e.id)) }}
+      />
     </div>
   );
 }
