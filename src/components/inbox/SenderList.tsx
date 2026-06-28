@@ -1,5 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 
+import { SearchInput } from "./SearchInput";
 import { SenderItem } from "./sender-item";
 import { SignOutButton } from "./sign-out-button";
 
@@ -40,6 +41,7 @@ export async function SenderList() {
           </div>
         </div>
       </div>
+      <SearchInput />
       <div className="flex-1 overflow-y-auto p-2">
         {senders.length === 0 ? (
           <p className="px-3 py-2 text-sm text-muted-foreground">No senders yet.</p>
@@ -51,11 +53,6 @@ export async function SenderList() {
           </div>
         )}
       </div>
-      <script
-        id="inbox-sender-ids"
-        type="application/json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(senders.map((s) => s.id)) }}
-      />
     </div>
   );
 }

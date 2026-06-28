@@ -18,6 +18,10 @@ export function useInboxKeyboard() {
     }
 
     function handler(e: KeyboardEvent) {
+      if (new URLSearchParams(window.location.search).has("q")) {
+        return;
+      }
+
       if (
         e.target instanceof HTMLInputElement ||
         e.target instanceof HTMLTextAreaElement
